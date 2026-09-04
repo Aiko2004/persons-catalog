@@ -3,6 +3,7 @@ package com.catalog.person;
 import com.catalog.common.NotFoundException;
 import com.catalog.common.PageResponse;
 import com.catalog.person.dto.*;
+import com.catalog.storage.PhotoStorage;
 import com.catalog.subject.Subject;
 import com.catalog.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -21,6 +23,7 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final SubjectRepository subjectRepository;
     private final PersonMapper mapper;
+    private final PhotoStorage photoStorage;
 
     public PageResponse<PersonResponse> search(String query,
                                                Collection<UUID> subjectIds,
@@ -67,6 +70,29 @@ public class PersonService {
     public void delete(UUID id) {
         Person person = getOrThrow(id);
         personRepository.delete(person);
+        this.deletePhoto(person.getId());
+    }
+
+    @Transactional
+    public PersonDetailResponse uploadPhoto(UUID id, MultipartFile file) {
+        Person person = getOrThrow(id);
+        String oldKey = person.getPhotoKey();
+
+        String newKey = photoStorage.store(file, id.toString());
+        person.setPhotoKey(newKey);
+
+        if (oldKey != null) {
+            photoStorage.delete(oldKey);
+        }
+        return mapper.toDetail(person);
+    }
+
+    @Transactional
+    public void deletePhoto(UUID id) {
+        Person person = getOrThrow(id);
+        String key = person.getPhotoKey();
+        person.setPhotoKey(null);
+        photoStorage.delete(key);
     }
 
     private void apply(Person person, PersonRequest r) {

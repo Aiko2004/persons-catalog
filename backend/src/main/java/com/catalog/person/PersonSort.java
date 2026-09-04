@@ -3,7 +3,6 @@ package com.catalog.person;
 import org.springframework.data.domain.Sort;
 
 import java.util.Map;
-import java.util.Set;
 
 public final class PersonSort {
 
