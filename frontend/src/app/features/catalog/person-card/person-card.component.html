@@ -1,0 +1,34 @@
+<article class="card" [routerLink]="['/persons', person().id]">
+  <div class="card__photo-wrap">
+    @if (person().photoUrl) {
+      <img
+        class="card__photo"
+        [src]="person().photoUrl"
+        [alt]="person().fullName"
+        loading="lazy"
+      />
+    } @else {
+      <div class="card__placeholder" aria-hidden="true">{{ initials() }}</div>
+    }
+
+    @if (person().verified) {
+      <span class="card__verified" aria-label="Тексерілген">✓</span>
+    }
+  </div>
+
+  <div class="card__body">
+    <h2 class="card__name">{{ person().fullName }}</h2>
+
+    @if (workYears()) {
+      <p class="card__years">{{ workYears() }}</p>
+    }
+
+    @if (person().subjects.length > 0) {
+      <div class="card__subjects">
+        @for (subject of person().subjects; track subject.id) {
+          <span class="card__subject">{{ subject.name }}</span>
+        }
+      </div>
+    }
+  </div>
+</article>

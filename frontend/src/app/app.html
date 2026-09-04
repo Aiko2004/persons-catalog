@@ -1,0 +1,20 @@
+<header class="app-header">
+  <div class="header-inner">
+    <a class="header-brand" routerLink="/">Мектеп архиві</a>
+    <nav class="header-nav" aria-label="Негізгі навигация">
+      <a
+        class="nav-link"
+        routerLink="/"
+        routerLinkActive="nav-link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Мұғалімдер
+      </a>
+      <a class="nav-link" routerLink="/subjects" routerLinkActive="nav-link--active">
+        Пәндер
+      </a>
+    </nav>
+  </div>
+</header>
+
+<router-outlet />
