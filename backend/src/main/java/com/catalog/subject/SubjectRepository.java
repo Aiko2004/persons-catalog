@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SubjectRepository extends JpaRepository<Subject, Long> {
+public interface SubjectRepository extends JpaRepository<Subject, UUID> {
     Optional<Subject> findBySlug(String slug);
 
     List<Subject> findAllByIdIn(Collection<UUID> ids);
