@@ -40,4 +40,10 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(400, "Bad Request",
                         "Некорректное значение параметра: " + ex.getName()));
     }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflict(ConflictException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiError.of(409, "Conflict", ex.getMessage()));
+    }
 }
