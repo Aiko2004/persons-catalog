@@ -27,3 +27,8 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+app:
+  storage:
+    path: ./uploads
+    base-url: http://localhost:8080/uploads
