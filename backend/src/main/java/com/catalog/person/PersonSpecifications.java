@@ -13,7 +13,7 @@ public final class PersonSpecifications {
 
     public static Specification<Person> search(String query) {
         if (query == null || query.isBlank()) {
-            return null;
+            return (root, cq, cb) -> null;
         }
         String pattern = "%" + query.trim().toLowerCase() + "%";
 
@@ -33,8 +33,9 @@ public final class PersonSpecifications {
 
     public static Specification<Person> hasAnySubject(Collection<UUID> subjectIds) {
         if (subjectIds == null || subjectIds.isEmpty()) {
-            return null;
+            return (root, cq, cb) -> null;
         }
+
         return (root, cq, cb) -> {
             if (Long.class != cq.getResultType() && cq.getResultType() != long.class) {
                 root.fetch("subjects", JoinType.LEFT);
@@ -47,7 +48,7 @@ public final class PersonSpecifications {
 
     public static Specification<Person> verified(Boolean verified) {
         if (verified == null) {
-            return null;
+            return (root, cq, cb) -> null;
         }
         return (root, cq, cb) -> cb.equal(root.get("verified"), verified);
     }
