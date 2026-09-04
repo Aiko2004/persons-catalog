@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,57 @@ public class PersonService {
         String key = person.getPhotoKey();
         person.setPhotoKey(null);
         photoStorage.delete(key);
+    }
+
+    @Transactional
+    public BulkImportResponse createBulk(BulkImportRequest request) {
+        Map<UUID, Subject> cache = new HashMap<>();
+        List<Person> persons = new ArrayList<>(request.persons().size());
+
+        for (PersonRequest r : request.persons()) {
+            Person person = new Person();
+            applyWithCache(person, r, cache);
+            persons.add(person);
+        }
+
+        List<Person> saved = personRepository.saveAll(persons);
+        return new BulkImportResponse(saved.size(), saved.stream().map(Person::getId).toList());
+    }
+
+    private void applyWithCache(Person person, PersonRequest r, Map<UUID, Subject> cache) {
+        person.setFirstName(r.firstName().trim());
+        person.setLastName(r.lastName().trim());
+        person.setMiddleName(trimToNull(r.middleName()));
+        person.setBirthYear(r.birthYear());
+        person.setDeathYear(r.deathYear());
+        person.setWorkStartYear(r.workStartYear());
+        person.setWorkEndYear(r.workEndYear());
+        person.setDescription(trimToNull(r.description()));
+
+        if (r.verified() != null) {
+            person.setVerified(r.verified());
+        }
+
+        if (r.subjectIds() != null && !r.subjectIds().isEmpty()) {
+            Set<UUID> missing = r.subjectIds().stream()
+                    .filter(id -> !cache.containsKey(id))
+                    .collect(Collectors.toSet());
+
+            if (!missing.isEmpty()) {
+                subjectRepository.findAllByIdIn(missing)
+                        .forEach(s -> cache.put(s.getId(), s));
+            }
+
+            Set<Subject> subjects = new LinkedHashSet<>();
+            for (UUID id : r.subjectIds()) {
+                Subject s = cache.get(id);
+                if (s == null) {
+                    throw new NotFoundException("Предмет не найден: " + id);
+                }
+                subjects.add(s);
+            }
+            person.replaceSubjects(subjects);
+        }
     }
 
     private void apply(Person person, PersonRequest r) {

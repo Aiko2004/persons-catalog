@@ -52,4 +52,10 @@ public class PersonController {
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
+
+    @PostMapping("/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BulkImportResponse createBulk(@Valid @RequestBody BulkImportRequest request) {
+        return service.createBulk(request);
+    }
 }
