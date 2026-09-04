@@ -1,0 +1,143 @@
+<div class="person-page">
+  <a class="back-link" routerLink="/">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    Каталогқа оралу
+  </a>
+
+  <!-- Жүктелу -->
+  @if (loading()) {
+    <div class="page-state">
+      <div class="spinner" role="status" aria-label="Жүктелуде"></div>
+      <p>Жүктелуде...</p>
+    </div>
+  }
+
+  <!-- 404 -->
+  @if (!loading() && error()?.status === 404) {
+    <div class="page-state">
+      <p class="page-state__title">Мұғалім табылмады.</p>
+      <a class="btn btn--outline" routerLink="/">Каталогқа оралу</a>
+    </div>
+  }
+
+  <!-- Басқа қате -->
+  @if (!loading() && error() && error()!.status !== 404) {
+    <div class="page-state page-state--error">
+      <p>Деректерді жүктеу мүмкін болмады.</p>
+      <button class="btn btn--retry" type="button" (click)="reload()">Қайталау</button>
+    </div>
+  }
+
+  <!-- Мазмұн -->
+  @if (!loading() && !error() && person(); as p) {
+    <div class="person-layout">
+
+      <!-- Фото -->
+      <div class="person-photo-wrap">
+        @if (p.photoUrl) {
+          <img class="person-photo" [src]="p.photoUrl" [alt]="p.fullName" />
+        } @else {
+          <div class="person-placeholder" aria-hidden="true">{{ initials() }}</div>
+        }
+      </div>
+
+      <!-- Ақпарат -->
+      <div class="person-info">
+        <div class="person-header">
+          <h1 class="person-name">{{ p.fullName }}</h1>
+          @if (p.verified) {
+            <span class="verified-badge">
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6L5 9L10 3" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Тексерілген
+            </span>
+          }
+        </div>
+
+        @if (lifeYears() || workYears()) {
+          <dl class="person-meta">
+            @if (lifeYears()) {
+              <div class="person-meta__row">
+                <dt class="person-meta__label">Өмір жылдары</dt>
+                <dd class="person-meta__value">{{ lifeYears() }}</dd>
+              </div>
+            }
+            @if (workYears()) {
+              <div class="person-meta__row">
+                <dt class="person-meta__label">Жұмыс жылдары</dt>
+                <dd class="person-meta__value">{{ workYears() }}</dd>
+              </div>
+            }
+          </dl>
+        }
+
+        @if (p.subjects.length > 0) {
+          <div class="person-subjects">
+            <span class="person-subjects__label">Пәндер</span>
+            <div class="person-subjects__chips">
+              @for (subject of p.subjects; track subject.id) {
+                <span class="subject-chip">{{ subject.name }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (p.description) {
+          <p class="person-description">{{ p.description }}</p>
+        }
+
+        <div class="person-actions">
+          <a class="btn btn--outline" [routerLink]="['/persons', p.id, 'edit']">Өңдеу</a>
+          <button class="btn btn--danger" type="button" (click)="openDeleteConfirm()">Өшіру</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Өшіру диалогы -->
+    @if (showDeleteConfirm()) {
+      <div class="modal-backdrop" (click)="cancelDelete()" role="presentation">
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-title"
+          (click)="$event.stopPropagation()"
+        >
+          <h2 class="modal__title" id="delete-title">Мұғалімді өшіру керек пе?</h2>
+          <p class="modal__subject">{{ p.fullName }}</p>
+          <p class="modal__warning">Бұл әрекетті қайтару мүмкін емес.</p>
+
+          @if (deleteError()) {
+            <p class="modal__error">{{ deleteError() }}</p>
+          }
+
+          <div class="modal__actions">
+            <button
+              class="btn btn--ghost"
+              type="button"
+              [disabled]="deleting()"
+              (click)="cancelDelete()"
+            >
+              Болдырмау
+            </button>
+            <button
+              class="btn btn--danger"
+              type="button"
+              [disabled]="deleting()"
+              (click)="confirmDelete()"
+            >
+              @if (deleting()) {
+                Өшірілуде...
+              } @else {
+                Өшіру
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

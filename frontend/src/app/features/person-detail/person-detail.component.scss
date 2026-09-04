@@ -1,0 +1,394 @@
+.person-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+/* ─── Назад ───────────────────────────────── */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  margin-bottom: 28px;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* ─── Күйлер ──────────────────────────────── */
+
+.page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 80px 16px;
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  p {
+    margin: 0;
+  }
+
+  &--error {
+    color: var(--color-error);
+  }
+}
+
+.page-state__title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Макет ───────────────────────────────── */
+
+.person-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ─── Фото ────────────────────────────────── */
+
+.person-photo-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--color-bg);
+  position: sticky;
+  top: 76px;
+}
+
+.person-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.person-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
+  user-select: none;
+}
+
+/* ─── Ақпарат ─────────────────────────────── */
+
+.person-info {
+  min-width: 0;
+}
+
+.person-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.person-name {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: var(--color-verified);
+  color: white;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ─── Мета (жылдар) ───────────────────────── */
+
+.person-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.person-meta__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.person-meta__label {
+  width: 148px;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.person-meta__value {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* ─── Пәндер ──────────────────────────────── */
+
+.person-subjects {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.person-subjects__label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  padding-top: 5px;
+  width: 148px;
+  flex-shrink: 0;
+}
+
+.person-subjects__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.subject-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+/* ─── Сипаттама ───────────────────────────── */
+
+.person-description {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--color-text);
+  margin: 0 0 32px;
+  white-space: pre-wrap;
+  max-width: 640px;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 20px;
+}
+
+/* ─── Батырмалар ──────────────────────────── */
+
+.person-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--outline {
+    border-color: var(--color-border);
+    background: var(--color-card);
+    color: var(--color-text);
+
+    &:hover:not(:disabled) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+  }
+
+  &--ghost {
+    border-color: var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+  }
+
+  &--danger {
+    background: var(--color-error);
+    border-color: var(--color-error);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #b91c1c;
+      border-color: #b91c1c;
+    }
+  }
+
+  &--retry {
+    border-color: var(--color-error);
+    background: transparent;
+    color: var(--color-error);
+
+    &:hover:not(:disabled) {
+      background: var(--color-error);
+      color: white;
+    }
+  }
+}
+
+/* ─── Диалог ──────────────────────────────── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.modal__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 8px;
+}
+
+.modal__subject {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+
+.modal__warning {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 20px;
+}
+
+.modal__error {
+  font-size: 0.875rem;
+  color: var(--color-error);
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border-radius: var(--radius-sm);
+}
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ─── Responsive ──────────────────────────── */
+
+@media (max-width: 680px) {
+  .person-page {
+    padding: 20px 12px 48px;
+  }
+
+  .person-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .person-photo-wrap {
+    max-width: 200px;
+    position: static;
+  }
+
+  .person-name {
+    font-size: 1.5rem;
+  }
+
+  .person-meta__label,
+  .person-subjects__label {
+    width: 120px;
+  }
+}
+
+@media (max-width: 400px) {
+  .modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal__actions .btn {
+    width: 100%;
+  }
+}

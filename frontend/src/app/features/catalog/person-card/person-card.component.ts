@@ -1,6 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PersonResponse } from '../../../core/models/person.model';
+import { formatYearRange, personInitials } from '../../../core/utils/person.utils';
 
 @Component({
   selector: 'app-person-card',
@@ -14,14 +15,11 @@ export class PersonCardComponent {
 
   readonly initials = computed(() => {
     const p = this.person();
-    return ((p.lastName?.[0] ?? '') + (p.firstName?.[0] ?? '')).toUpperCase();
+    return personInitials(p.lastName, p.firstName);
   });
 
-  readonly workYears = computed((): string | null => {
-    const { workStartYear: start, workEndYear: end } = this.person();
-    if (!start && !end) return null;
-    if (start && end) return `${start} — ${end}`;
-    if (start) return `${start} — қазірге дейін`;
-    return `— ${end}`;
+  readonly workYears = computed(() => {
+    const p = this.person();
+    return formatYearRange(p.workStartYear, p.workEndYear);
   });
 }
