@@ -5,6 +5,11 @@
 }
 
 .catalog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 24px;
 }
 
@@ -13,6 +18,35 @@
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+
+  &--primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+
+    &:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+  }
 }
 
 /* ─── Басқару элементтері ─────────────────── */

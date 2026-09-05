@@ -17,4 +17,10 @@
   </div>
 </header>
 
+@if (notification.message()) {
+  <div class="app-notification" role="alert" aria-live="polite">
+    {{ notification.message() }}
+  </div>
+}
+
 <router-outlet />

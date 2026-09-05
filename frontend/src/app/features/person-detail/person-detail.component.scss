@@ -74,13 +74,75 @@
 
 /* ─── Фото ────────────────────────────────── */
 
+.person-photo-col {
+  position: sticky;
+  top: 76px;
+}
+
 .person-photo-wrap {
   border-radius: var(--radius);
   overflow: hidden;
   aspect-ratio: 1;
   background: var(--color-bg);
-  position: sticky;
-  top: 76px;
+  position: relative;
+}
+
+.photo-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+}
+
+.spinner--white {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+}
+
+.photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.photo-action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.photo-upload-label {
+  position: relative;
+  cursor: pointer;
+}
+
+.photo-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.photo-filename {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.photo-error {
+  font-size: 0.8125rem;
+  color: var(--color-error);
+  margin: 0;
 }
 
 .person-photo {
@@ -286,6 +348,17 @@
     }
   }
 
+  &--primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+  }
+
   &--retry {
     border-color: var(--color-error);
     background: transparent;
@@ -295,6 +368,11 @@
       background: var(--color-error);
       color: white;
     }
+  }
+
+  &--sm {
+    padding: 7px 14px;
+    font-size: 0.875rem;
   }
 }
 
@@ -368,9 +446,12 @@
     gap: 24px;
   }
 
+  .person-photo-col {
+    position: static;
+  }
+
   .person-photo-wrap {
     max-width: 200px;
-    position: static;
   }
 
   .person-name {

@@ -1,0 +1,351 @@
+.form-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+/* ─── Шарлау ──────────────────────────────── */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.form-page__title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 24px;
+}
+
+/* ─── Күй ─────────────────────────────────── */
+
+.page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 16px;
+  color: var(--color-text-secondary);
+
+  p {
+    margin: 0;
+  }
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Форма карточкалары ──────────────────── */
+
+.form-card {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 14px;
+}
+
+.form-card__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 18px;
+}
+
+/* ─── Өрістер ─────────────────────────────── */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.field__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.field__required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.field__input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-card);
+  transition: border-color 0.15s;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+
+  &--error {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+    }
+  }
+
+  &--year {
+    width: 120px;
+  }
+
+  &--textarea {
+    height: auto;
+    padding: 10px 12px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+  }
+}
+
+.field__error {
+  font-size: 0.8125rem;
+  color: var(--color-error);
+  margin: 0;
+}
+
+/* ─── Жылдар ──────────────────────────────── */
+
+.years-group__label {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+
+  & + .years-group {
+    margin-bottom: 20px;
+  }
+
+  &:last-of-type + .years-group {
+    margin-bottom: 0;
+  }
+}
+
+.years-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.years-dash {
+  padding-top: 26px;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ─── Пәндер ──────────────────────────────── */
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.subject-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover {
+    background: var(--color-bg);
+  }
+}
+
+.subject-check__input {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.subject-check__label {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+/* ─── Тексерілген ─────────────────────────── */
+
+.verified-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.verified-check__input {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.verified-check__label {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+/* ─── Жалпы қате ──────────────────────────── */
+
+.save-error {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-bottom: 14px;
+}
+
+/* ─── Батырмалар ──────────────────────────── */
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+  }
+
+  &--ghost {
+    border-color: var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+  }
+}
+
+/* ─── Responsive ──────────────────────────── */
+
+@media (max-width: 560px) {
+  .form-page {
+    padding: 20px 12px 48px;
+  }
+
+  .form-page__title {
+    font-size: 1.375rem;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field--full {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

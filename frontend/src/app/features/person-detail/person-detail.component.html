@@ -34,13 +34,83 @@
   @if (!loading() && !error() && person(); as p) {
     <div class="person-layout">
 
-      <!-- Фото -->
-      <div class="person-photo-wrap">
-        @if (p.photoUrl) {
-          <img class="person-photo" [src]="p.photoUrl" [alt]="p.fullName" />
-        } @else {
-          <div class="person-placeholder" aria-hidden="true">{{ initials() }}</div>
-        }
+      <!-- Фото бағаны -->
+      <div class="person-photo-col">
+        <div class="person-photo-wrap">
+          @if (previewUrl()) {
+            <img class="person-photo" [src]="previewUrl()!" alt="Алдын ала қарау" />
+          } @else if (p.photoUrl) {
+            <img class="person-photo" [src]="p.photoUrl" [alt]="p.fullName" />
+          } @else {
+            <div class="person-placeholder" aria-hidden="true">{{ initials() }}</div>
+          }
+
+          @if (photoUploading()) {
+            <div class="photo-loading-overlay" aria-hidden="true">
+              <div class="spinner spinner--white"></div>
+            </div>
+          }
+        </div>
+
+        <!-- Фото іс-қимылдары -->
+        <div class="photo-actions">
+          @if (selectedFile()) {
+            <p class="photo-filename">{{ selectedFile()!.name }}</p>
+            <div class="photo-action-row">
+              <button
+                class="btn btn--ghost btn--sm"
+                type="button"
+                [disabled]="photoUploading()"
+                (click)="cancelPhotoSelect()"
+              >
+                Болдырмау
+              </button>
+              <button
+                class="btn btn--primary btn--sm"
+                type="button"
+                [disabled]="photoUploading()"
+                (click)="uploadPhoto()"
+              >
+                @if (photoUploading()) { Жүктелуде... } @else { Жүктеу }
+              </button>
+            </div>
+          } @else {
+            <div class="photo-action-row">
+              @if (p.photoUrl) {
+                <label class="btn btn--outline btn--sm photo-upload-label">
+                  Ауыстыру
+                  <input
+                    class="photo-file-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onFileSelected($event)"
+                  />
+                </label>
+                <button
+                  class="btn btn--danger btn--sm"
+                  type="button"
+                  (click)="openPhotoDeleteConfirm()"
+                >
+                  Фотоны өшіру
+                </button>
+              } @else {
+                <label class="btn btn--outline btn--sm photo-upload-label">
+                  Фото қосу
+                  <input
+                    class="photo-file-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onFileSelected($event)"
+                  />
+                </label>
+              }
+            </div>
+          }
+
+          @if (photoError()) {
+            <p class="photo-error" role="alert">{{ photoError() }}</p>
+          }
+        </div>
       </div>
 
       <!-- Ақпарат -->
@@ -96,7 +166,41 @@
       </div>
     </div>
 
-    <!-- Өшіру диалогы -->
+    <!-- Фотоны өшіру диалогы -->
+    @if (showPhotoDeleteConfirm()) {
+      <div class="modal-backdrop" (click)="cancelPhotoDelete()" role="presentation">
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="photo-delete-title"
+          (click)="$event.stopPropagation()"
+        >
+          <h2 class="modal__title" id="photo-delete-title">Фотоны өшіру керек пе?</h2>
+          <p class="modal__warning">Бұл әрекетті қайтару мүмкін емес.</p>
+          <div class="modal__actions">
+            <button
+              class="btn btn--ghost"
+              type="button"
+              [disabled]="photoDeleting()"
+              (click)="cancelPhotoDelete()"
+            >
+              Болдырмау
+            </button>
+            <button
+              class="btn btn--danger"
+              type="button"
+              [disabled]="photoDeleting()"
+              (click)="confirmPhotoDelete()"
+            >
+              @if (photoDeleting()) { Өшірілуде... } @else { Өшіру }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Мұғалімді өшіру диалогы -->
     @if (showDeleteConfirm()) {
       <div class="modal-backdrop" (click)="cancelDelete()" role="presentation">
         <div
@@ -129,11 +233,7 @@
               [disabled]="deleting()"
               (click)="confirmDelete()"
             >
-              @if (deleting()) {
-                Өшірілуде...
-              } @else {
-                Өшіру
-              }
+              @if (deleting()) { Өшірілуде... } @else { Өшіру }
             </button>
           </div>
         </div>

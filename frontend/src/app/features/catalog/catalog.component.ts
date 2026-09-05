@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, EMPTY, Subject } from 'rxjs';
 import {
   catchError,
@@ -25,7 +25,7 @@ interface SortOption {
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [ReactiveFormsModule, PersonCardComponent],
+  imports: [ReactiveFormsModule, RouterLink, PersonCardComponent],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss',
 })

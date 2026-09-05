@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { SubjectRequest, SubjectResponse } from '../models/subject.model';
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +19,10 @@ export class SubjectService {
     if (!this.cache$) {
       this.cache$ = this.http.get<SubjectResponse[]>(this.base).pipe(
         tap((list) => this.subjects.set(list)),
+        catchError((err) => {
+          this.cache$ = null; // позволяет повторить запрос после ошибки
+          return throwError(() => err);
+        }),
         shareReplay(1),
       );
     }

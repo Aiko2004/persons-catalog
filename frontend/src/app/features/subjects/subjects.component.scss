@@ -1,0 +1,381 @@
+.subjects-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+/* ─── Тақырып ─────────────────────────────── */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* ─── Күйлер ──────────────────────────────── */
+
+.page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 80px 16px;
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  p {
+    margin: 0;
+  }
+
+  &--error {
+    color: var(--color-error);
+  }
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Тізім ───────────────────────────────── */
+
+.subject-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.subject-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.12s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #fafbfc;
+  }
+}
+
+.subject-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subject-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.subject-desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subject-count {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.subject-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ─── Батырмалар ──────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+  }
+
+  &--ghost {
+    border-color: var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+  }
+
+  &--danger {
+    background: var(--color-error);
+    border-color: var(--color-error);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #b91c1c;
+      border-color: #b91c1c;
+    }
+  }
+
+  &--retry {
+    border-color: var(--color-error);
+    background: transparent;
+    color: var(--color-error);
+
+    &:hover:not(:disabled) {
+      background: var(--color-error);
+      color: white;
+    }
+  }
+
+  &--icon {
+    padding: 7px;
+    border-color: transparent;
+    background: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-bg);
+      border-color: var(--color-border);
+      color: var(--color-text);
+    }
+
+    &.btn--icon-danger:hover:not(:disabled) {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: var(--color-error);
+    }
+  }
+}
+
+/* ─── Диалог ──────────────────────────────── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.modal__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 20px;
+}
+
+.modal__subject {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+
+.modal__warning {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 20px;
+}
+
+.modal__warning-box {
+  font-size: 0.875rem;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 0 0 10px;
+}
+
+.modal__error {
+  font-size: 0.875rem;
+  color: var(--color-error);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 0 0 16px;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* ─── Форма өрістері ──────────────────────── */
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 16px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.modal-field__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.modal-field__required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.modal-field__input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-card);
+  transition: border-color 0.15s;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+
+  &--error {
+    border-color: var(--color-error);
+
+    &:focus {
+      border-color: var(--color-error);
+    }
+  }
+
+  &--textarea {
+    height: auto;
+    padding: 10px 12px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+  }
+}
+
+.modal-field__error {
+  font-size: 0.8125rem;
+  color: var(--color-error);
+  margin: 0;
+}
+
+/* ─── Responsive ──────────────────────────── */
+
+@media (max-width: 560px) {
+  .subjects-page {
+    padding: 20px 12px 48px;
+  }
+
+  .page-title {
+    font-size: 1.375rem;
+  }
+
+  .subject-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .subject-count {
+    order: 3;
+    margin-left: auto;
+  }
+
+  .subject-actions {
+    order: 2;
+  }
+
+  .modal__actions {
+    flex-direction: column-reverse;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

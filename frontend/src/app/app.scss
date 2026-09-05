@@ -54,6 +54,35 @@
   }
 }
 
+/* ─── Хабарлама ───────────────────────────── */
+
+.app-notification {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  background: var(--color-verified);
+  color: #ffffff;
+  text-align: center;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  animation: notif-in 0.25s ease;
+  pointer-events: none;
+}
+
+@keyframes notif-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 480px) {
   .header-inner {
     padding: 0 12px;
