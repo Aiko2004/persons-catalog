@@ -6,6 +6,7 @@ import com.catalog.person.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -57,5 +58,17 @@ public class PersonController {
     @ResponseStatus(HttpStatus.CREATED)
     public BulkImportResponse createBulk(@Valid @RequestBody BulkImportRequest request) {
         return service.createBulk(request);
+    }
+
+    @PostMapping("/{id}/photo")
+    public PersonDetailResponse uploadPhoto(@PathVariable UUID id,
+                                            @RequestParam("file") MultipartFile file) {
+        return service.uploadPhoto(id, file);
+    }
+
+    @DeleteMapping("/{id}/photo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePhoto(@PathVariable UUID id) {
+        service.deletePhoto(id);
     }
 }

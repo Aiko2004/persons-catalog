@@ -70,8 +70,11 @@ public class PersonService {
     @Transactional
     public void delete(UUID id) {
         Person person = getOrThrow(id);
+        String photoKey = person.getPhotoKey();
         personRepository.delete(person);
-        this.deletePhoto(person.getId());
+        if (photoKey != null) {
+            photoStorage.delete(photoKey);
+        }
     }
 
     @Transactional

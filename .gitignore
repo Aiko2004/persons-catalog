@@ -7,4 +7,7 @@ backend/target/
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
-uploads/
+uploads
+
+*.log
+*.log.err
