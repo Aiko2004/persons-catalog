@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { SubjectRequest, SubjectResponse } from '../models/subject.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SubjectService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/subjects';
+  private readonly base = `${environment.apiUrl}/api/subjects`;
 
   /** Закэшированный список предметов для дропдаунов по всему приложению */
   readonly subjects = signal<SubjectResponse[]>([]);

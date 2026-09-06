@@ -9,11 +9,12 @@ import {
   PersonResponse,
   PersonsParams,
 } from '../models/person.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PersonService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/persons';
+  private readonly base = `${environment.apiUrl}/api/persons`;
 
   getPersons(params: PersonsParams = {}): Observable<PageResponse<PersonResponse>> {
     let httpParams = new HttpParams();

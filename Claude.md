@@ -176,6 +176,30 @@ Render автоматически выставляет `PORT`; приложен�
 - Host: `aws-0-<region>.pooler.supabase.com`
 - Username: `postgres.<project-ref>`
 
+## Деплой (Vercel) — фронтенд
+
+Фронтенд деплоится на Vercel из директории `frontend/`.
+
+### Настройка Vercel
+
+`vercel.json` уже содержит:
+- `buildCommand`: `node scripts/set-env.js && ng build --configuration=production`
+- `outputDirectory`: `dist/frontend/browser`
+- `rewrites`: все пути → `index.html` (Angular router)
+
+### Переменные окружения
+
+| Переменная | Обязательная | Описание |
+|------------|:---:|----------|
+| `API_URL`  | ✓   | Полный URL бэкенда на Render, напр. `https://persons-catalog.onrender.com` |
+
+**Как работает**: перед сборкой `scripts/set-env.js` записывает `API_URL` в `src/environments/environment.prod.ts`. Angular в production-конфиге подключает этот файл вместо `environment.ts`.
+
+### Локальная разработка
+
+`environment.ts` → `apiUrl: ''` → запросы идут через `proxy.conf.json` → `localhost:8080`.
+Файл `environment.prod.ts` в разработке не используется.
+
 ## Ескертулер
 
 - Backend `photoUrl` дайын күйінде жібереді, фронт storage туралы білмейді
