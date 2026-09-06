@@ -148,6 +148,34 @@ SubjectRef: id, name, slug
 
 Бір рет бәрін генерациялаудың қажеті жоқ. Бір вертикаль — бір коммит.
 
+## Деплой (Render)
+
+Бэкенд деплоится на Render через Docker (backend/Dockerfile).
+Render автоматически выставляет `PORT`; приложение читает его через `${PORT:-8080}` в CMD.
+
+### Переменные окружения — точные имена
+
+| Переменная              | Обязательная | Дефолт (локально)                  | Описание                                     |
+|-------------------------|:---:|------------------------------------|----------------------------------------------|
+| `DATABASE_URL`          | ✓   | `jdbc:postgresql://localhost:5433/persons` | JDBC URL, для Supabase добавить `?sslmode=require` |
+| `DATABASE_USERNAME`     | ✓   | `persons`                          | Для Supabase Session pooler: `postgres.<ref>` |
+| `DATABASE_PASSWORD`     | ✓   | `persons`                          | Пароль БД                                    |
+| `APP_STORAGE_TYPE`      | ✓   | `local`                            | `supabase` на проде                          |
+| `APP_STORAGE_BASE_URL`  | ✓   | `http://localhost:8080/uploads`    | Публичный URL bucket: `https://<ref>.supabase.co/storage/v1/object/public/photos` |
+| `SUPABASE_S3_ENDPOINT`  | ✓*  | —                                  | `https://<ref>.storage.supabase.co/storage/v1/s3` |
+| `SUPABASE_S3_REGION`    |     | `auto`                             | Регион проекта, напр. `eu-central-1`        |
+| `SUPABASE_S3_ACCESS_KEY`| ✓*  | —                                  | S3 Access Key из Supabase Storage            |
+| `SUPABASE_S3_SECRET_KEY`| ✓*  | —                                  | S3 Secret Key                                |
+| `SUPABASE_S3_BUCKET`    |     | `photos`                           | Имя bucket                                   |
+| `APP_CORS_ALLOWED_ORIGINS` |  | `http://localhost:4200`            | URL фронтенда, через запятую если несколько  |
+
+*Обязательны только при `APP_STORAGE_TYPE=supabase`.
+
+### Supabase: подключение к БД
+- Использовать **Session pooler**, порт **5432** (не Transaction pooler на 6543).
+- Host: `aws-0-<region>.pooler.supabase.com`
+- Username: `postgres.<project-ref>`
+
 ## Ескертулер
 
 - Backend `photoUrl` дайын күйінде жібереді, фронт storage туралы білмейді
