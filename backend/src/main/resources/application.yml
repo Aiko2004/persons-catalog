@@ -5,6 +5,9 @@ spring:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/persons}
     username: ${DATABASE_USERNAME:persons}
     password: ${DATABASE_PASSWORD:persons}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
   jpa:
     hibernate:
       ddl-auto: validate
