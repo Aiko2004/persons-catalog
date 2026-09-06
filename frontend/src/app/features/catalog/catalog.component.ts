@@ -2,11 +2,12 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, EMPTY, Subject } from 'rxjs';
+import { combineLatest, EMPTY, forkJoin, of, Subject } from 'rxjs';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
+  map,
   startWith,
   switchMap,
   tap,
@@ -15,7 +16,10 @@ import { AppError } from '../../core/models/api.model';
 import { PersonResponse, PersonSortField, SortDirection } from '../../core/models/person.model';
 import { PersonService } from '../../core/services/person.service';
 import { SubjectService } from '../../core/services/subject.service';
+import { formatYearRange } from '../../core/utils/person.utils';
 import { PersonCardComponent } from './person-card/person-card.component';
+
+type ViewMode = 'cards' | 'table';
 
 interface SortOption {
   value: PersonSortField;
@@ -44,7 +48,9 @@ export class CatalogComponent implements OnInit {
   readonly totalPages = signal(0);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+  readonly exporting = signal(false);
 
+  readonly currentView = signal<ViewMode>('cards');
   readonly currentSearch = signal('');
   readonly selectedSubjects = signal<string[]>([]);
   readonly currentPage = signal(0);
@@ -69,12 +75,10 @@ export class CatalogComponent implements OnInit {
   ngOnInit(): void {
     this.subjectService.loadSubjects().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
 
-    // Іздеу жолағы → URL жаңарту (debounce арқылы)
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((search) => this.navigate({ search: search || null, page: 0 }));
 
-    // URL өзгерісі немесе «Қайталау» → мұғалімдерді жүктеу
     combineLatest([this.route.queryParamMap, this.retry$.pipe(startWith(null as null))])
       .pipe(
         tap(() => {
@@ -86,17 +90,22 @@ export class CatalogComponent implements OnInit {
           if (this.searchControl.value !== search) {
             this.searchControl.setValue(search, { emitEvent: false });
           }
+          const view = (paramMap.get('view') ?? 'cards') as ViewMode;
+          this.currentView.set(view);
           this.currentSearch.set(search);
           this.selectedSubjects.set(paramMap.getAll('subject'));
           this.currentPage.set(+(paramMap.get('page') ?? 0));
           this.currentSort.set((paramMap.get('sort') ?? 'lastName') as PersonSortField);
           this.currentDirection.set((paramMap.get('direction') ?? 'asc') as SortDirection);
 
+          const size = view === 'table' ? 100 : 20;
+
           return this.personService
             .getPersons({
               search: search || undefined,
               subject: paramMap.getAll('subject'),
               page: +(paramMap.get('page') ?? 0),
+              size,
               sort: (paramMap.get('sort') ?? 'lastName') as PersonSortField,
               direction: (paramMap.get('direction') ?? 'asc') as SortDirection,
             })
@@ -124,9 +133,7 @@ export class CatalogComponent implements OnInit {
 
   toggleSubject(id: string): void {
     const current = this.selectedSubjects();
-    const updated = current.includes(id)
-      ? current.filter((s) => s !== id)
-      : [...current, id];
+    const updated = current.includes(id) ? current.filter((s) => s !== id) : [...current, id];
     this.navigate({ subject: updated, page: 0 });
   }
 
@@ -139,12 +146,99 @@ export class CatalogComponent implements OnInit {
     this.navigate({ direction: this.currentDirection() === 'asc' ? 'desc' : 'asc', page: 0 });
   }
 
+  setView(view: ViewMode): void {
+    this.navigate({ view, page: 0 });
+  }
+
   goToPage(page: number): void {
     this.navigate({ page });
   }
 
+  openPerson(id: string): void {
+    this.router.navigate(['/persons', id]);
+  }
+
   reload(): void {
     this.retry$.next();
+  }
+
+  formatWorkYears(person: PersonResponse): string | null {
+    return formatYearRange(person.workStartYear, person.workEndYear);
+  }
+
+  exportCsv(): void {
+    this.exporting.set(true);
+
+    const baseParams = {
+      search: this.currentSearch() || undefined,
+      subject: this.selectedSubjects(),
+      sort: this.currentSort(),
+      direction: this.currentDirection(),
+      size: 100,
+      page: 0,
+    };
+
+    this.personService
+      .getPersons(baseParams)
+      .pipe(
+        switchMap((firstPage) => {
+          if (firstPage.totalPages <= 1) {
+            return of(firstPage.content);
+          }
+          const rest = Array.from({ length: firstPage.totalPages - 1 }, (_, i) =>
+            this.personService.getPersons({ ...baseParams, page: i + 1 }),
+          );
+          return forkJoin(rest).pipe(
+            map((pages) => [...firstPage.content, ...pages.flatMap((p) => p.content)]),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (all) => {
+          this.downloadCsv(all);
+          this.exporting.set(false);
+        },
+        error: () => this.exporting.set(false),
+      });
+  }
+
+  private downloadCsv(persons: PersonResponse[]): void {
+    const header = [
+      'Тегі',
+      'Аты',
+      'Әкесінің аты',
+      'Жұмыс басталды',
+      'Жұмыс аяқталды',
+      'Пәндер',
+      'Тексерілген',
+    ];
+
+    const rows = persons.map((p) => [
+      p.lastName,
+      p.firstName,
+      p.middleName ?? '',
+      p.workStartYear?.toString() ?? '',
+      p.workEndYear?.toString() ?? '',
+      p.subjects.map((s) => s.name).join('; '),
+      p.verified ? 'иә' : 'жоқ',
+    ]);
+
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(','))
+      .join('\r\n');
+
+    const BOM = '﻿';
+    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `mugalimder-${date}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   private navigate(
@@ -154,6 +248,7 @@ export class CatalogComponent implements OnInit {
       sort: PersonSortField;
       direction: SortDirection;
       page: number;
+      view: ViewMode;
     }>,
   ): void {
     const search = 'search' in overrides ? overrides.search : this.currentSearch();
@@ -161,6 +256,7 @@ export class CatalogComponent implements OnInit {
     const sort = 'sort' in overrides ? overrides.sort : this.currentSort();
     const direction = 'direction' in overrides ? overrides.direction : this.currentDirection();
     const page = 'page' in overrides ? overrides.page : this.currentPage();
+    const view = 'view' in overrides ? overrides.view : this.currentView();
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -170,6 +266,7 @@ export class CatalogComponent implements OnInit {
         sort: sort !== 'lastName' ? sort : null,
         direction: direction !== 'asc' ? direction : null,
         page: page ? page : null,
+        view: view !== 'cards' ? view : null,
       },
       queryParamsHandling: 'replace',
     });

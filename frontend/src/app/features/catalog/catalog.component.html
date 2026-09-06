@@ -1,12 +1,62 @@
 <main class="catalog">
   <header class="catalog__header">
     <h1 class="catalog__title">Мұғалімдер каталогы</h1>
-    <a class="btn btn--primary" routerLink="/persons/new">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-      </svg>
-      Мұғалім қосу
-    </a>
+    <div class="catalog__header-actions">
+      <div class="view-toggle" role="group" aria-label="Көрсету түрі">
+        <button
+          class="view-toggle__btn"
+          [class.view-toggle__btn--active]="currentView() === 'cards'"
+          (click)="setView('cards')"
+          type="button"
+          title="Карточкалар"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/>
+            <rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor"/>
+            <rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/>
+            <rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/>
+          </svg>
+        </button>
+        <button
+          class="view-toggle__btn"
+          [class.view-toggle__btn--active]="currentView() === 'table'"
+          (click)="setView('table')"
+          type="button"
+          title="Кесте"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="1" y="2" width="14" height="2.2" rx="0.8" fill="currentColor"/>
+            <rect x="1" y="6.9" width="14" height="2.2" rx="0.8" fill="currentColor"/>
+            <rect x="1" y="11.8" width="14" height="2.2" rx="0.8" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <button
+        class="btn btn--secondary"
+        type="button"
+        (click)="exportCsv()"
+        [disabled]="exporting()"
+        title="CSV экспорт"
+      >
+        @if (exporting()) {
+          <span class="btn-spinner"></span>
+        } @else {
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M7.5 1v8M7.5 9L4.5 6M7.5 9l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1.5 11.5v1A1 1 0 002.5 13.5h10a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        }
+        {{ exporting() ? 'Экспортталуда...' : 'CSV' }}
+      </button>
+
+      <a class="btn btn--primary" routerLink="/persons/new">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+        Мұғалім қосу
+      </a>
+    </div>
   </header>
 
   <!-- Басқару элементтері -->
@@ -104,13 +154,44 @@
     </div>
   }
 
-  <!-- Карточкалар торы -->
+  <!-- Карточкалар / кесте -->
   @if (!loading() && !error() && persons().length > 0) {
-    <div class="catalog__grid">
-      @for (person of persons(); track person.id) {
-        <app-person-card [person]="person" />
-      }
-    </div>
+    @if (currentView() === 'table') {
+      <div class="catalog__table-wrap">
+        <table class="catalog__table">
+          <thead>
+            <tr>
+              <th>ФИО</th>
+              <th>Жұмыс жылдары</th>
+              <th>Пәндер</th>
+              <th class="catalog__th-center">Тексерілген</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (person of persons(); track person.id) {
+              <tr class="catalog__table-row" (click)="openPerson(person.id)">
+                <td class="catalog__td-name">{{ person.fullName }}</td>
+                <td class="catalog__td-years">{{ formatWorkYears(person) }}</td>
+                <td class="catalog__td-subjects">
+                  {{ person.subjects.length ? person.subjects.map(s => s.name).join(', ') : '' }}
+                </td>
+                <td class="catalog__th-center">
+                  @if (person.verified) {
+                    <span class="verified-badge" title="Тексерілген">✓</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="catalog__grid">
+        @for (person of persons(); track person.id) {
+          <app-person-card [person]="person" />
+        }
+      </div>
+    }
 
     <footer class="catalog__footer">
       <p class="catalog__total">{{ totalElements() }} мұғалім табылды</p>
